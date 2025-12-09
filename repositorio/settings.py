@@ -13,22 +13,29 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 from decouple import config
+from pathlib import Path
 import os
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+from decouple import Config, RepositoryEnv
+env_path = "/etc/secrets/.env"   # Ruta donde Render guarda el Secret File
 
+if os.path.exists(env_path):
+    config = Config(RepositoryEnv(env_path))  # Render
+else:
+    from decouple import config               # Local
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY")
-DEBUG = config("DEBUG", cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*").split(",")
 
 LANGUAGE_CODE = "es"
 
@@ -166,7 +173,7 @@ SITE_ID = 1
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
 LOGIN_REDIRECT_URL = "/"
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = config("GEMINI_API_KEY", default=None)
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
