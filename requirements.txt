@@ -35,4 +35,6 @@ django-filter
 django-crispy-forms
 crispy-bootstrap5
 django-allauth
+dj-database-url
+psycopg2-binary
 gunicorn
